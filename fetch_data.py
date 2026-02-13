@@ -1,7 +1,7 @@
 import requests
 
 # CoinGecko API endpoint for Bitcoin price
-url = "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd"
+url = "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=bitcoin,ethereum,solana,cardano,ripple"
 
 r = requests.get(url)
 
