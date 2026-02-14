@@ -1,6 +1,6 @@
 import requests
 import pandas as pd
-
+print(pd.Timestamp.now())
 # CoinGecko API endpoint for Bitcoin price
 url = "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=bitcoin,ethereum,solana,cardano,ripple"
 
@@ -10,8 +10,12 @@ data = r.json()
 # Convert to DataFrame - THAT'S IT
 df = pd.DataFrame(data)
 
+df['timestamp'] = pd.Timestamp.now()
+
 # Look at it
 print(df.head())
+
+
 
 # Save to CSV
 df.to_csv('crypto_prices.csv', index=False)
