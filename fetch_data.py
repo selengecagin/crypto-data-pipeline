@@ -1,6 +1,7 @@
 import requests
 import pandas as pd
 from pathlib import Path
+import sqlalchemy
 
 print(pd.Timestamp.now())
 # CoinGecko API endpoint for Bitcoin price
