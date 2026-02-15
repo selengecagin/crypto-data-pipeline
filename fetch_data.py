@@ -15,8 +15,6 @@ df['timestamp'] = pd.Timestamp.now()
 # Look at it
 print(df.head())
 
-
-
 # Save to CSV
-df.to_csv('crypto_prices.csv', index=False)
+df.to_csv('crypto_prices.csv', mode='a',index=False)
 
