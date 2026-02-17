@@ -1,25 +1,36 @@
+import sys
 from xml.dom.expatbuilder import TEXT_NODE
-
 import requests
 import pandas as pd
 from pathlib import Path
 from sqlalchemy import create_engine, text, VARCHAR
 from sqlalchemy.dialects.mysql import NUMERIC
 
-print(pd.Timestamp.now())
 # CoinGecko API endpoint for Bitcoin price
 url = "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=bitcoin,ethereum,solana,cardano,ripple"
 
-r = requests.get(url)
-data = r.json()
+try:
+    r = requests.get(url, timeout=10,verify=True)
+    r.raise_for_status()
+    data = r.json()
+except requests.exceptions.HTTPError as errh:
+    print("HTTP Error")
+    print(errh.args[0])
+    sys.exit()
+except requests.exceptions.ReadTimeout as errrt:
+    print("Time out")
+    sys.exit()
+except requests.exceptions.ConnectionError as conerr:
+    print("Connection error")
+    sys.exit()
+except requests.exceptions.RequestException as errex:
+    print("Exception request")
+    sys.exit()
 
-# Convert to DataFrame - THAT'S IT
+
+# Convert to DataFrame
 df = pd.DataFrame(data)
-
 df['timestamp'] = pd.Timestamp.now()
-
-
-print(df.head())
 
 engine = create_engine('postgresql+psycopg2://huriselengecagin:113308Monet@localhost/crypto_data_pipeline')
 
@@ -58,7 +69,7 @@ with engine.connect() as conn:
     """))
 df['roi'] = df['roi'].astype(str)
 
-df.to_sql('crypto_prices', if_exists='append',index=False,con=engine)
+df.to_sql('crypto_prices', if_exists='append',index=False, con=engine)
 
 # file_path = Path('crypto_prices.csv')
 # if file_path.exists():
