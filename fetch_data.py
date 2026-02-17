@@ -1,30 +1,33 @@
 import sys
-from xml.dom.expatbuilder import TEXT_NODE
 import requests
 import pandas as pd
+import logging
 from pathlib import Path
 from sqlalchemy import create_engine, text, VARCHAR
-from sqlalchemy.dialects.mysql import NUMERIC
 
-# CoinGecko API endpoint for Bitcoin price
+logging.basicConfig(
+    filename='pipeline.log',
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s'
+)
 url = "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=bitcoin,ethereum,solana,cardano,ripple"
 
 try:
-    r = requests.get(url, timeout=10,verify=True)
+    r = requests.get(url, timeout=10, verify=True)
     r.raise_for_status()
     data = r.json()
+    logging.info("API request completed successfully")
 except requests.exceptions.HTTPError as errh:
-    print("HTTP Error")
-    print(errh.args[0])
+    logging.error("HTTP error returned from API")
     sys.exit()
 except requests.exceptions.ReadTimeout as errrt:
-    print("Time out")
+    logging.error("API request timed out")
     sys.exit()
 except requests.exceptions.ConnectionError as conerr:
-    print("Connection error")
+    logging.critical("Failed to establish connection to API")
     sys.exit()
 except requests.exceptions.RequestException as errex:
-    print("Exception request")
+    logging.error("Unexpected request exception occurred")
     sys.exit()
 
 
