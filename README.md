@@ -1,7 +1,7 @@
 # Crypto Data Pipeline
 
 ## Overview
-A Python ETL pipeline that fetches cryptocurrency prices from CoinGecko API and stores them in PostgreSQL. Runs every hour to build historical price data.
+A Python ETL pipeline that fetches cryptocurrency prices from CoinGecko API and stores them in PostgreSQL. Runs every minute to build historical price data.
 
 ## How It Works
 Fetches live prices for 5 cryptocurrencies
