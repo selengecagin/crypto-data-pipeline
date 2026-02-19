@@ -9,6 +9,15 @@ import sqlalchemy
 from sqlalchemy import create_engine, text, VARCHAR
 from sqlalchemy.exc import DBAPIError
 
+# importing os module for environment variables
+import os
+# importing necessary functions from dotenv library
+from dotenv import load_dotenv, dotenv_values
+# loading variables from .env file
+load_dotenv()
+db_password = os.getenv("db_password")
+
+
 logging.basicConfig(
     filename='pipeline.log',
     level=logging.INFO,
@@ -42,7 +51,7 @@ def job():
     df['timestamp'] = pd.Timestamp.now()
     df['roi'] = df['roi'].astype(str)
 
-    engine = create_engine('postgresql+psycopg2://huriselengecagin:113308Monet@localhost/crypto_data_pipeline')
+    engine = create_engine(f'postgresql+psycopg2://huriselengecagin:{db_password}@localhost/crypto_data_pipeline')
 
     try:
         with engine.connect() as conn:
@@ -88,7 +97,8 @@ def job():
         logging.critical('Failed to append dataframe to crypto_prices')
         return
 
-schedule.every().hour.do(job)
+job()
+schedule.every(1).minutes.do(job)
 
 while True:
     schedule.run_pending()
